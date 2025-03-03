@@ -151,6 +151,8 @@ Open your web browser and go to `http://localhost:5002`. You should see somethin
 Hello, World! MySQL version: 8.0.25
 ```
 
+https://github.com/user-attachments/assets/d4ef9725-38c0-48c5-b674-8c5cc3794322
+
 3. Stop the services:
 
 To stop and remove the containers, use:

@@ -153,3 +153,77 @@ This project demonstrates how to set up a simple multi-container Docker applicat
 
 - If you're testing locally, ensure you have Docker and Docker Compose installed.
 - Redis data will be persisted using the `redis-data` volume to avoid data loss on container restart.
+
+---
+
+## Bonus Tasks 🎯
+
+### Persistent Storage for Redis
+
+To ensure Redis retains data even after the container stops or restarts, you have already configured a volume in the `docker-compose.yml` file. The `redis` service is using a volume called `redis-data`, which persists the data at `/data` inside the container.
+
+```yaml
+ redis:
+  image: "redis:latest"
+  ports:
+    - "6379:6379"
+  volumes:
+    - redis-data:/data  # Persist Redis data
+```
+
+### Environment Variables for Redis Connection
+
+To make the Flask app more flexible and configurable, the Redis connection details (`REDIS_HOST` and `REDIS_PORT`) are now passed as environment variables. This allows the Flask app to connect to Redis using values defined in the `docker-compose.yml` file.
+
+```yaml
+flask-app:
+  environment:
+    - FLASK_APP=app.py
+    - FLASK_RUN_HOST=0.0.0.0
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+```
+
+In the `app.py`, these values are accessed using `os.getenv()`.
+
+```python
+import os
+
+redis_host = os.getenv('REDIS_HOST', 'redis')
+redis_port = os.getenv('REDIS_PORT', 6379)
+```
+
+### Scaling the Flask Application
+
+You can scale the Flask app by running multiple instances of it and load balancing between them using Docker Compose. To `scale` the Flask app, you can add the scale option to the `docker-compose.yml` file or run the following command:
+
+```bash
+docker-compose up --scale flask-app=3 -d
+```
+
+This will run 3 instances of the Flask app container. Docker Compose will automatically load balance the traffic between these instances.
+
+You can view the logs from all containers by running:
+
+```bash
+docker-compose logs -f
+```
+
+To stop the scaled services, use:
+
+```bash
+docker-compose down
+```
+
+--- 
+
+## Conclusion 🎉
+
+This project demonstrates how to set up a simple multi-container Docker application with Flask and Redis using Docker Compose. You also learned how to add persistent storage for Redis, use environment variables for configuration, and scale the Flask application using Docker Compose.
+
+---
+
+## Notes 📝
+
+- If you're testing locally, ensure you have Docker and Docker Compose installed.
+- Redis data will be persisted using the `redis-data` volume to avoid data loss on container restart.
